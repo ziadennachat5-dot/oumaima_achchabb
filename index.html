@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oumaima Achchab | Floral Romance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --peony: #D473A5;
+            --cream: #FFFDF0;
+            --blush: #FFD1DC;
+            --rose-red: #C41E3A; /* Red Touch */
+        }
+        body {
+            background-color: var(--cream);
+            background-image: radial-gradient(rgba(255, 209, 220, 0.2), rgba(255, 253, 208, 0.2)), url('./public/images/floral-bg.png');
+            background-attachment: fixed;
+            background-size: cover;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        .elegant-serif { font-family: 'Playfair Display', serif; }
+        .cursive { font-family: 'Dancing Script', cursive; }
+        
+        #petal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .silk-ribbon {
+            position: absolute;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--peony);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px var(--peony);
+        }
+
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 253, 240, 0.7);
+        }
+
+        .heart-container {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,90 C50,90 10,65 10,35 C10,18 25,10 40,25 C40,25 42,27 50,35 C58,27 60,25 60,25 C75,10 90,18 90,35 C90,65 50,90 50,90 Z"/></svg>');
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            background: var(--rose-red);
+            box-shadow: 0 30px 60px rgba(196, 30, 58, 0.4);
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .lightbox img {
+            max-width: 85%;
+            max-height: 85%;
+            border-radius: 10px;
+            box-shadow: 0 0 100px rgba(196, 30, 58, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .red-accent { color: var(--rose-red); }
+        .bg-red-accent { background-color: var(--rose-red); }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div id="custom-cursor"></div>
+    <canvas id="petal-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[100] nav-blur border-b border-pink-100/50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="elegant-serif text-2xl font-bold text-[#D473A5]">OA</div>
+            <div class="hidden md:flex space-x-10 text-sm font-semibold tracking-widest uppercase text-gray-500">
+                <a href="#" class="hover:text-pink-500 transition-colors">Home</a>
+                <a href="#about" class="hover:text-pink-500 transition-colors">Her Story</a>
+                <a href="#gallery" class="hover:text-pink-500 transition-colors">Moments</a>
+                <a href="#message" class="hover:text-pink-500 transition-colors">The Message</a>
+            </div>
+            <a href="https://instagram.com/oumaima_achchab" target="_blank" class="bg-red-accent text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-tighter">Follow</a>
+        </div>
+    </nav>
+
+    <!-- Silk Ribbons -->
+    <svg class="silk-ribbon top-0 left-0 w-full" viewBox="0 0 1440 320">
+        <path id="ribbon1" fill="#FFD1DC" d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,202.7C960,224,1056,224,1152,192C1248,160,1344,96,1392,64L1440,32L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
+    </svg>
+
+    <!-- Home Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden px-4 pt-20">
+        <div class="relative z-10 text-center space-y-6">
+            <p class="text-xl tracking-[0.4em] text-gray-400 uppercase font-light">The Digital Garden of</p>
+            <h1 class="elegant-serif text-8xl md:text-[10rem] text-[#D473A5] font-bold leading-none">Oumaima</h1>
+            <p class="cursive text-4xl text-red-accent opacity-80">Achchab</p>
+            <div class="pt-10">
+                <button onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})" 
+                        class="bg-red-accent text-white px-12 py-5 rounded-full font-semibold shadow-2xl hover:scale-105 transition-transform">
+                    Enter the Garden
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Her Story Section -->
+    <section id="about" class="relative min-h-screen py-32 px-6 bg-white/50">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div class="relative group">
+                <div class="absolute -inset-4 border-2 border-red-accent/20 rounded-3xl group-hover:inset-0 transition-all duration-500"></div>
+                <img src="./public/images/hero.jpg" class="relative z-10 rounded-2xl shadow-2xl w-full aspect-[4/5] object-cover" alt="Oumaima">
+            </div>
+            <div class="space-y-10">
+                <h2 class="elegant-serif text-6xl text-[#D473A5]">Her Story</h2>
+                <div class="space-y-6 text-lg text-gray-600 leading-relaxed font-light">
+                    <p>
+                        To describe <span class="text-red-accent font-semibold italic">Oumaima Achchab</span> is to describe the very essence of light itself. She is not merely a person; she is a frequency of kindness that resonates through every room she enters.
+                    </p>
+                    <p>
+                        Her beauty is layered—a delicate balance of a striking presence and a soul that is even more profound. Like a rare rose that blooms in the heart of winter, she brings warmth and color to everything she touches. Whether it's her radiant smile that can outshine any garden or the quiet strength she carries, Oumaima is a masterpiece in constant motion.
+                    </p>
+                    <p>
+                        This journey is a tribute to her spirit, her dreams, and the incredible journey she walks. She is the girl who finds beauty in the smallest things, and in doing so, makes the world infinitely more beautiful for everyone else.
+                    </p>
+                </div>
+                <div class="flex space-x-6 pt-6">
+                    <div class="text-center">
+                        <span class="block text-3xl font-bold text-red-accent">✨</span>
+                        <span class="text-xs uppercase tracking-widest text-gray-400">Radiant</span>
+                    </div>
+                    <div class="w-px h-10 bg-gray-200"></div>
+                    <div class="text-center">
+                        <span class="block text-3xl font-bold text-red-accent">🌹</span>
+                        <span class="text-xs uppercase tracking-widest text-gray-400">Elegant</span>
+                    </div>
+                    <div class="w-px h-10 bg-gray-200"></div>
+                    <div class="text-center">
+                        <span class="block text-3xl font-bold text-red-accent">💫</span>
+                        <span class="text-xs uppercase tracking-widest text-gray-400">Pure</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Moments Gallery -->
+    <section id="gallery" class="py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="elegant-serif text-6xl text-[#D473A5] mb-4">Gallery of Light</h2>
+                <p class="text-gray-400 uppercase tracking-[0.3em] text-sm">Frozen Moments in Her Journey</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <div class="gallery-item group relative h-[400px] md:h-[550px] bg-white overflow-hidden rounded-3xl cursor-pointer shadow-2xl transition-all" onclick="openLightbox('./public/images/moment-1.jpg')">
+                    <img src="./public/images/moment-1.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="">
+                    <div class="absolute inset-0 bg-red-accent/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-5xl">❤️</span>
+                    </div>
+                </div>
+                <div class="gallery-item group relative h-[400px] md:h-[550px] bg-white overflow-hidden rounded-3xl cursor-pointer shadow-2xl transition-all" onclick="openLightbox('./public/images/moment-2.jpg')">
+                    <img src="./public/images/moment-2.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="">
+                    <div class="absolute inset-0 bg-red-accent/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-5xl">❤️</span>
+                    </div>
+                </div>
+                <div class="gallery-item group relative h-[400px] md:h-[550px] bg-white overflow-hidden rounded-3xl cursor-pointer shadow-2xl transition-all" onclick="openLightbox('./public/images/moment-3.jpg')">
+                    <img src="./public/images/moment-3.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="">
+                    <div class="absolute inset-0 bg-red-accent/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-5xl">❤️</span>
+                    </div>
+                </div>
+                <div class="gallery-item group relative h-[400px] md:h-[550px] bg-white overflow-hidden rounded-3xl cursor-pointer shadow-2xl transition-all" onclick="openLightbox('./public/images/hero.jpg')">
+                    <img src="./public/images/hero.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="">
+                    <div class="absolute inset-0 bg-red-accent/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-5xl">❤️</span>
+                    </div>
+                </div>
+                <div class="gallery-item group relative h-[400px] md:h-[550px] bg-white overflow-hidden rounded-3xl cursor-pointer shadow-2xl transition-all" onclick="openLightbox('./public/images/moment-4.jpg')">
+                    <img src="./public/images/moment-4.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="">
+                    <div class="absolute inset-0 bg-red-accent/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-5xl">❤️</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Message Heart -->
+    <section id="message" class="relative min-h-screen flex flex-col items-center justify-center py-32 px-6 bg-[#FFFDF0]">
+        <!-- The Red Heart -->
+        <div class="heart-container w-full max-w-[400px] md:max-w-[500px] aspect-square relative mb-16">
+            <!-- Heart is now red and empty -->
+        </div>
+        
+        <!-- The Text Underneath -->
+        <div class="max-w-3xl text-center space-y-8">
+            <h3 class="elegant-serif text-4xl md:text-6xl text-[#A64B7A] font-bold">The Eternal Rose</h3>
+            <p class="text-xl md:text-2xl text-gray-700 leading-relaxed font-light">
+                Oumaima, if my words could build a garden, it would be as vast as the stars and as bright as your eyes. You are the poetry I never knew how to write, the song I never knew I could sing. Thank you for being <span class="text-red-accent font-semibold italic">you</span>.
+            </p>
+            <div class="cursive text-5xl text-red-accent">Forever & Always.</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-32 text-center space-y-10 bg-white">
+        <div class="max-w-md mx-auto h-px bg-red-100"></div>
+        <h4 class="elegant-serif text-4xl text-[#D473A5]">Connect with Her</h4>
+        <div class="flex justify-center space-x-6">
+            <a href="https://instagram.com/oumaima_achchab" target="_blank" 
+               class="inline-flex items-center space-x-4 bg-red-accent text-white px-10 py-5 rounded-full font-bold shadow-2xl hover:bg-[#A61E3A] transition-all transform hover:-translate-y-2">
+                <span>Instagram @oumaima_achchab</span>
+            </a>
+        </div>
+        <div class="text-gray-400 font-light space-y-2">
+            <p>Made with love for Oumaima Achchab</p>
+            <p class="text-xs uppercase tracking-widest">&copy; 2026 Floral Romance Tribute</p>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Silk Ribbon Wave Effect
+        gsap.to("#ribbon1", {
+            duration: 6,
+            attr: { d: "M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,176C672,181,768,139,864,117.3C960,96,1056,96,1152,128C1248,160,1344,224,1392,256L1440,288L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" },
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+
+        // Petal Particles (Red touches added)
+        const canvas = document.getElementById('petal-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const petalColors = ['#FFD1DC', '#FFB6C1', '#C41E3A', '#FFF0F5'];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Petal {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 12 + 6;
+                this.speed = Math.random() * 2 + 0.5;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.02 - 0.01;
+                this.color = petalColors[Math.floor(Math.random() * petalColors.length)];
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.y / 60) * 1.5;
+                this.angle += this.spin;
+                if (this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(this.size, this.size, this.size, -this.size, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) particles.push(new Petal());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Custom Cursor
+        const cursor = document.getElementById('custom-cursor');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1
+            });
+        });
+
+        // Lightbox Functions
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.style.display = 'flex';
+            gsap.from(img, { scale: 0.5, opacity: 0, duration: 0.6, ease: "back.out(1.2)" });
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        // Smart Image Loading Fix
+        // This script automatically tries different paths if the images don't load
+        document.querySelectorAll('img').forEach(img => {
+            img.onerror = function() {
+                const currentSrc = this.src;
+                const fileName = currentSrc.split('/').pop();
+                
+                // Try different common hosting paths
+                const pathsToTry = [
+                    `./images/${fileName}`,
+                    `images/${fileName}`,
+                    `./public/images/${fileName}`,
+                    `public/images/${fileName}`,
+                    `./${fileName}`
+                ];
+
+                let attemptIndex = 0;
+                const tryNext = () => {
+                    if (attemptIndex < pathsToTry.length) {
+                        console.log(`Trying alternative path for ${fileName}: ${pathsToTry[attemptIndex]}`);
+                        this.src = pathsToTry[attemptIndex];
+                        attemptIndex++;
+                    } else {
+                        console.error(`All paths failed for ${fileName}`);
+                        this.style.border = '1px solid red'; // Visual cue for missing images
+                    }
+                };
+                tryNext();
+            };
+        });
+
+        // Section Reveal Animations
+        gsap.utils.toArray('section').forEach(section => {
+            const elements = section.querySelectorAll('.elegant-serif, p, .gallery-item, .heart-container');
+            if (elements.length > 0) {
+                gsap.from(elements, {
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    },
+                    y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.1,
+                    ease: "power2.out",
+                    clearProps: "all" // Important: clear properties after animation
+                });
+            }
+        });
+
+        // Nav Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-2', 'shadow-sm');
+                nav.classList.remove('py-4');
+            } else {
+                nav.classList.remove('py-2', 'shadow-sm');
+                nav.classList.add('py-4');
+            }
+        });
+    </script>
+</body>
+</html>
